@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
+
 // import styles from '../styles/Home.module.css'
 import { ethers } from "ethers";
 import { useEffect, useState } from 'react';
@@ -119,6 +121,14 @@ export default function Home() {
     }
   };
 
+  //openseaのAPIを叩いてNFTのデータを取得する関数
+  const getNFTInfo = async (tokenId, nftContractAddress) => {
+    const assetsJson = await(await fetch("https://testnets-api.opensea.io/api/v1/assets" + "?token_ids=" + tokenId + "&asset_contract_address=" + nftContractAddress)).json();
+      // console.log("assetsjson",assetsJson)
+    const assets = assetsJson["assets"]
+    return assets;
+  }
+
   //残り時刻変換関数
   //カウントダウンするように何かimportする必要がある
   const lmitedTimeCaliculate = (exhibitedTime) => {
@@ -150,6 +160,9 @@ export default function Home() {
       </Head>
       <div className='bg-gray-800 h-screen w-screen'>
         <header className='bg-black h-[10%] flex flex-row justify-center items-center'>
+          <Link href="/collateralize">
+            <a className="text-white absolute left-0 p-2 m-4">collateralize</a>
+          </Link>
           <div className=" text-blue-700 font-bold">GMO NFT-Fi</div>
           {currentAccount === "" ? (
             <button
@@ -185,21 +198,22 @@ export default function Home() {
             .map((collateralizedNFT, index) => {
               const etherLink = "https://rinkeby.etherscan.io/address/" + collateralizedNFT.nftContractAddress;
               const openseaTestNetLink = "https://testnets.opensea.io/assets/rinkeby/" + collateralizedNFT.nftContractAddress + "/" + collateralizedNFT.tokenId;
+              asset = getNFTInfo(collateralizedNFT.tokenId,collateralizedNFT.nftContractAddress)[0];
               return (
                 <>
                   <div key={index} className='bg-gray-100 w-[70%] flex flex-row'>
                     {/* openseaのAPIをたたく */}
-                  {/* <img className='w-[20%]'
-                    src={owningNFT.image_thumbnail_url}
+                  <img className='w-[20%]'
+                    src={asset.image_thumbnail_url}
                     alt="new"
-                    /> */}
-                  <div className='flex flex-row w-[60%] items-center justify-center'>
+                    />
+                  <div className='flex flex-row w-[50%] items-center justify-center'>
                     {/* <div className='OpenSeaのリンク'>NFTアドレス：</div> */}
-                    <a className='text-blue-600' href={openseaTestNetLink} target="_blank">{ collateralizedNFT.name }</a>
+                    <a className='text-blue-600' href={openseaTestNetLink} target="_blank" rel="noopener noreferrer">{ asset.name }</a>
                   </div>
-                  {/* <div className='w-[20%] bg-green-300 flex flex-col justify-center items-center'>現在の価格を表示</div>
-                  <div className='w-[20%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
-                  <div className='w-[20%] bg-gray-100 flex flex-col justify-center items-center'>
+                  <div className='w-[10%] bg-green-300 flex flex-col justify-center items-center'>現在の価格を表示</div>
+                  <div className='w-[10%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div>
+                  <div className='w-[10%] bg-gray-100 flex flex-col justify-center items-center'>
                     <button className='bg-orange-400 border-solid border-1 p-2 rounded-md hover:bg-gray-400 m-4 text-white shadow-md' onClick={buyNFT}>
                     Buy!</button>
                   </div>

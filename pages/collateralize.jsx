@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
+
 // import styles from '../styles/Home.module.css'
 import { ethers } from "ethers";
 import { useEffect, useState } from 'react';
@@ -144,6 +146,9 @@ export default function Collateralize() {
       </Head>
       <div className='bg-gray-800 h-screen w-screen'>
         <header className='bg-black h-[10%] flex flex-row justify-center items-center'>
+        <Link href="/">
+            <a className="text-white absolute left-0 p-2 m-4">invest</a>
+          </Link>
           <div className=" text-blue-700 font-bold">GMO NFT-Fi</div>
           {currentAccount === "" ? (
             <button
@@ -188,7 +193,7 @@ export default function Collateralize() {
                     />
                   <div className='flex flex-row w-[60%] items-center justify-center'>
                     {/* <div className='OpenSeaのリンク'>NFTアドレス：</div> */}
-                    <a className='text-blue-600' href={openseaTestNetLink} target="_blank">{ owningNFT.name }</a>
+                    <a className='text-blue-600' href={openseaTestNetLink} target="_blank" rel="noopener noreferrer">{ owningNFT.name }</a>
                   </div>
                   {/* <div className='w-[20%] bg-green-300 flex flex-col justify-center items-center'>現在の価格を表示</div>
                   <div className='w-[20%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
