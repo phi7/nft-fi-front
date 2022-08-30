@@ -10,7 +10,7 @@ import nftMint from "/src/nft-mint.json";
 import Countdown from './components/timer';
 import PriceArea from './components/priceArea';
 
-export default function Home() {
+export default function TransferGyen() {
   //デプロイされたコントラクトのアドレス
   const CONTRACT_ADDRESS_NFT_FI = "0xDAB07fe1fEa0117A320F4CA07b66cedd8F306D83";
   const CONTRACT_ADDRESS_NFT_MINT = "0x842BDfd7da2d603b176f0E41B58a6f2D785aFBcA";
@@ -248,7 +248,7 @@ export default function Home() {
                     {/* <div className='w-[10%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
                     <Countdown startingDate={startingDate} startingHours={startingHours} startingMinutes={startingMinutes} startingSeconds={startingSeconds} ></Countdown>
                     {/* <div className="flex"> */}
-                    <PriceArea countIndex={collateralizedNFT.countIndex} ></PriceArea>
+                    <PriceArea countIndex = {collateralizedNFT.countIndex}></PriceArea>
                     {/* <div key={index} className="text-black flex flex-col items-center justify-center w-[10%]">
                       <textarea
                         key={index}

@@ -2,15 +2,19 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// import styles from '../styles/Home.module.css'
+// import styles from '../fstyles/Home.module.css'
 import { ethers } from "ethers";
 import { useEffect, useState } from 'react';
+import nftFi from "/src/nft-fi.json";
+import nftMint from "/src/nft-mint.json";
+
 
 export default function Collateralize() {
   //デプロイされたコントラクトのアドレス
-  const contractAddress = ""
+  const CONTRACT_ADDRESS_NFT_FI = "0xDAB07fe1fEa0117A320F4CA07b66cedd8F306D83";
+  const CONTRACT_ADDRESS_NFT_MINT = "0x842BDfd7da2d603b176f0E41B58a6f2D785aFBcA";
   //ABI
-  const contractABI = "hoge"
+  // const contractABI = "hoge"
   //現在のアカウント
   const [currentAccount, setCurrentAccount] = useState("");
   // console.log("currentAccount: ", currentAccount);
@@ -89,9 +93,9 @@ export default function Collateralize() {
 
   //残り時刻変換関数
   //カウントダウンするように何かimportする必要がある
-  const lmitedTimeCaliculate = (exhibitedTime) => {
+  // const lmitedTimeCaliculate = (exhibitedTime) => {
 
-    }
+  //   }
     
   //持っているNFTを表示
   const getOwningNFTs = async() => {
@@ -120,12 +124,87 @@ export default function Collateralize() {
       setOwningNFTs(body.assets)
   }
 
-  //購入関数
-  const collateralizeNFT = () => {
-    //NFTを購入できるだけのGyenを保有しているかどうかを確認する
-    //持っていなかったらalertを出したい
-    //持っていたらプールした旨を伝える
+  //担保にいれる関数
+  const collateralizeNFT = async(nftContractAddress,tokenId) => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        //providerを作成
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        //コントラクトに悪世するするためのオブジェクトを作成
+        const nftFiContract = new ethers.Contract(
+          CONTRACT_ADDRESS_NFT_FI,
+          nftFi.abi,
+          signer
+        );
+        console.log("Going to pop wallet now to pay gas...");
+        //関数を呼ぶ
+        let collateralizeTxn = await nftFiContract.collateralize(
+          nftContractAddress,
+          tokenId
+        );
+        console.log("Mining...please wait.");
+        //トランザクションの終了を待つ
+        await collateralizeTxn.wait();
+        const nftMintContract = new ethers.Contract(
+          CONTRACT_ADDRESS_NFT_MINT,
+          nftMint.abi,
+          signer
+        );
+        // nftMintContract.approve(nftFiContract.address, tokenId);
+        // console.log("approveしたぞい");
+        // nftMintContract["safeTransferFrom(address,address,uint256)"](currentAccount,nftMintContract.address,tokenId);
+        nftMintContract.transferFrom(currentAccount,nftMintContract.address,tokenId);
+
+        console.log("コントラクトにロックしたぞい！")
+
+        console.log(
+          `Mined, see transaction: https://rinkeby.etherscan.io/tx/${collateralizeTxn.hash}`
+        );
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+  //NFTをミントするボタン
+  // const mintNFT = async () => {
+  //   try {
+  //     const { ethereum } = window;
+  //     if (ethereum) {
+  //       //providerを作成
+  //       const provider = new ethers.providers.Web3Provider(ethereum);
+  //       const signer = provider.getSigner();
+  //       //コントラクトに悪世するするためのオブジェクトを作成
+  //       const connectedContract = new ethers.Contract(
+  //         CONTRACT_ADDRESS_NFT_MINT,
+  //         myNFT.abi,
+  //         signer
+  //       );
+  //       console.log("Going to pop wallet now to pay gas...");
+  //       //関数を呼ぶ
+  //       let nftTxn = await connectedContract.makeMyNFT(
+  //         firstText,
+  //         secondText,
+  //         thirdText
+  //       );
+  //       console.log("Mining...please wait.");
+  //       //トランザクションの終了を待つ
+  //       await nftTxn.wait();
+
+  //       console.log(
+  //         `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+  //       );
+  //     } else {
+  //       console.log("Ethereum object doesn't exist!");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   //読み込まれたときにwalletがつながっているかチェック
   useEffect(() => {
@@ -198,8 +277,8 @@ export default function Collateralize() {
                   {/* <div className='w-[20%] bg-green-300 flex flex-col justify-center items-center'>現在の価格を表示</div>
                   <div className='w-[20%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
                   <div className='w-[20%] bg-gray-100 flex flex-col justify-center items-center'>
-                    <button className='bg-orange-400 border-solid border-1 p-2 rounded-md hover:bg-gray-400 m-4 text-white shadow-md' onClick={collateralizeNFT}>
-                    Collateraize!</button>
+                    <button className='bg-orange-400 border-solid border-1 p-2 rounded-md hover:bg-gray-400 m-4 text-white shadow-md' onClick={()=>{collateralizeNFT(owningNFT.asset_contract.address, owningNFT.token_id)} } >
+                    Collateralize!</button>
                   </div>
                 </div>
                   <div className='h-2'></div>
