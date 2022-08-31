@@ -12,7 +12,7 @@ import PriceArea from './components/priceArea';
 
 export default function Home() {
   //デプロイされたコントラクトのアドレス
-  const CONTRACT_ADDRESS_NFT_FI = "0xDAB07fe1fEa0117A320F4CA07b66cedd8F306D83";
+  const CONTRACT_ADDRESS_NFT_FI = "0xBF1FEb187300F4B7A7b8Bbd95880356440Bf46B9";
   const CONTRACT_ADDRESS_NFT_MINT = "0x842BDfd7da2d603b176f0E41B58a6f2D785aFBcA";
   //ABI
   const contractABI = "hoge"
@@ -122,7 +122,7 @@ export default function Home() {
             timestamp: new Date(collateralizedNFTFromContract.timestamp * 1000),
             name: asset.name,
             image_thumbnail_url: asset.image_thumbnail_url,
-            price: ethers.BigNumber.from(collateralizedNFTFromContract.price).toNumber(),
+            price: ethers.BigNumber.from(collateralizedNFTFromContract.biggestBidPrice).toNumber(),
           }
           );
         }
@@ -191,7 +191,11 @@ export default function Home() {
           <Link href="/collateralize">
             <a className="text-white absolute left-0 p-2 m-4">collateralize</a>
           </Link>
-          <div className=" text-blue-700 font-bold">GMO NFT-Fi</div>
+          <div className='flex flex-row items-end space-x-4 '>
+            <div className='text-white text-4xl'>Eve</div>
+            <div className=" text-blue-700 font-bold align-bottom">by GMO</div>
+          </div>
+          
           {currentAccount === "" ? (
             <button
               className="absolute right-0 m-4 border-solid border-2 p-2 rounded-md bg-gray-200 border-emerald-500 hover:bg-gray-400 "
@@ -205,12 +209,12 @@ export default function Home() {
             </div>
           )}
         </header>
-        <div className='h-[100%] bg-white flex flex-col justify-center items-center'>
+        <div className='h-[200%] bg-white flex flex-col justify-center items-center'>
           <div className='bg-gray-100 w-[70%] flex flex-row'>
             <div className='flex flex-col w-[70%] justify-center items-center'>
               NFT
             </div>
-            <div className='w-[10%] bg-green-300 flex flex-col justify-center items-center'>Now Price</div>
+            <div className='w-[10%] bg-green-300 flex flex-col justify-center items-center'>Now</div>
             <div className='w-[10%] bg-blue-300 flex flex-col justify-center items-center'>Time Limit</div>
             <div className='w-[20%] bg-gray-100 flex flex-row justify-center items-center'>
               希望価格
@@ -235,7 +239,6 @@ export default function Home() {
               return (
                 <>
                   <div key={index} className='bg-gray-100 w-[70%] flex flex-row'>
-                      {/* openseaのAPIをたたく */}
                     <img className='w-[20%]'
                       src={ collateralizedNFT.image_thumbnail_url }
                       alt="new"

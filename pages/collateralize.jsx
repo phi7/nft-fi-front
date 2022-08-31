@@ -11,7 +11,7 @@ import nftMint from "/src/nft-mint.json";
 
 export default function Collateralize() {
   //デプロイされたコントラクトのアドレス
-  const CONTRACT_ADDRESS_NFT_FI = "0xDAB07fe1fEa0117A320F4CA07b66cedd8F306D83";
+  const CONTRACT_ADDRESS_NFT_FI = "0xBF1FEb187300F4B7A7b8Bbd95880356440Bf46B9";
   const CONTRACT_ADDRESS_NFT_MINT = "0x842BDfd7da2d603b176f0E41B58a6f2D785aFBcA";
   //ABI
   // const contractABI = "hoge"
@@ -138,7 +138,16 @@ export default function Collateralize() {
           nftFi.abi,
           signer
         );
+        const nftMintContract = new ethers.Contract(
+          CONTRACT_ADDRESS_NFT_MINT,
+          nftMint.abi,
+          signer
+        );
         console.log("Going to pop wallet now to pay gas...");
+        //approveを呼ばせる
+        let collateralizeApproveTxn = await nftMintContract.approve(nftFiContract.address, tokenId);
+        await collateralizeApproveTxn.wait();
+        console.log("approve finish!");
         //関数を呼ぶ
         let collateralizeTxn = await nftFiContract.collateralize(
           nftContractAddress,
@@ -147,15 +156,11 @@ export default function Collateralize() {
         console.log("Mining...please wait.");
         //トランザクションの終了を待つ
         await collateralizeTxn.wait();
-        const nftMintContract = new ethers.Contract(
-          CONTRACT_ADDRESS_NFT_MINT,
-          nftMint.abi,
-          signer
-        );
+        
         // nftMintContract.approve(nftFiContract.address, tokenId);
         // console.log("approveしたぞい");
         // nftMintContract["safeTransferFrom(address,address,uint256)"](currentAccount,nftMintContract.address,tokenId);
-        nftMintContract.transferFrom(currentAccount,nftMintContract.address,tokenId);
+        // nftMintContract.transferFrom(currentAccount,nftMintContract.address,tokenId);
 
         console.log("コントラクトにロックしたぞい！")
 
@@ -228,7 +233,11 @@ export default function Collateralize() {
         <Link href="/">
             <a className="text-white absolute left-0 p-2 m-4">invest</a>
           </Link>
-          <div className=" text-blue-700 font-bold">GMO NFT-Fi</div>
+          <div className='flex flex-row items-end space-x-2 '>
+            <div className='text-white text-4xl'>Eve</div>
+            <div className='text-blue-700 text-sm'>by</div>
+            <div className=" text-blue-700 font-bold align-bottom">GMO</div>
+          </div>
           {currentAccount === "" ? (
             <button
               className="absolute right-0 m-4 border-solid border-2 p-2 rounded-md bg-gray-200 border-emerald-500 hover:bg-gray-400 "
@@ -242,7 +251,7 @@ export default function Collateralize() {
             </div>
           )}
         </header>
-        <div className='h-[95%] bg-white flex flex-col justify-center items-center'>
+        <div className='h-[200%] bg-white flex flex-col justify-center items-center'>
           <div className='bg-gray-400 m-4 p-2 boreder-2 border-solid rounded-md' onClick={getOwningNFTs}>☛　持っているAdamのNFTを表示する　</div>
           {/* <div className='bg-yellow-300 w-[70%] flex flex-row'>
             <div className='flex flex-col w-[40%]'>

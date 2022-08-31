@@ -4,11 +4,11 @@ import { ethers } from "ethers";
 import gyen from "/src/gyen.json";
 
 export default function PriceArea(props) {
-    const CONTRACT_ADDRESS_NFT_FI = "0xDAB07fe1fEa0117A320F4CA07b66cedd8F306D83";
+    const CONTRACT_ADDRESS_NFT_FI = "0xBF1FEb187300F4B7A7b8Bbd95880356440Bf46B9";
     const CONTRACT_ADDRESS_GYEN = "";
     
     const [inputedText, setInputedText] = useState(0);
-    // const countIndex = props.countIndex;
+    const countIndex = props.countIndex;
     // const currentAccount = props.currentAccount;
     //入札関数
   const makeBid = async(countIndex, price) => {
@@ -32,17 +32,22 @@ export default function PriceArea(props) {
           gyen.abi,
           signer
         );
-        //データをスマートコントラクトから取得
-        await nftFiPortalContract.makeBid(ethers.BigNumber.from(String(countIndex)), ethers.BigNumber.from(String(price)));
         //Gyenのaprrove boolが返る
-          const gyenApproveFlag = await gyenPortalContract.approve(nftFiContract.address, ethers.BigNumber.from(String(price)));
-         gyenApproveFlag ?? alert("GyenのApproveが完了");
+          console.log(nftFiPortalContract.address);
+          const gyenApproveFlag = await gyenPortalContract.approve(nftFiPortalContract.address, ethers.BigNumber.from(String(price)));
+          await gyenApproveFlag.wait();
+        gyenApproveFlag ?? alert("GyenのApproveが完了");
+        //データをスマートコントラクトから取得
+          let hogeTxn = await nftFiPortalContract.makeBid(ethers.BigNumber.from(String(countIndex)), ethers.BigNumber.from(String(price)));
+          await hogeTxn.wait();
+          alert("スマートコントラクトにGyenを送ったよ！")
 
       } else {
         console.log("Ethereum object doesn't exist!");
       }
     } catch (error){
-      console.log(error);
+        console.log(error);
+        alert("不適切な価格だよ！");
     }
 
   }
