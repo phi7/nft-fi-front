@@ -11,8 +11,9 @@ import Countdown from './components/timer';
 import PriceArea from './components/priceArea';
 
 export default function Home() {
+
   //デプロイされたコントラクトのアドレス
-  const CONTRACT_ADDRESS_NFT_FI = "0xBF1FEb187300F4B7A7b8Bbd95880356440Bf46B9";
+  const CONTRACT_ADDRESS_NFT_FI = "0x26B9CFbAAd4d1B98b29eA003393eE79F01854D91";
   const CONTRACT_ADDRESS_NFT_MINT = "0x842BDfd7da2d603b176f0E41B58a6f2D785aFBcA";
   //ABI
   const contractABI = "hoge"
@@ -114,6 +115,10 @@ export default function Home() {
         for (const collateralizedNFTFromContract of collateralizedNFTsFromContract){
           const asset = await getNFTInfo(collateralizedNFTFromContract.tokenId, collateralizedNFTFromContract.nftContractAddress);
           // console.log("huga",typeof(new Date(collateralizedNFTFromContract.timestamp * 1000)));
+          // console.log("hogepre");
+          const divisor = ethers.BigNumber.from("1000000000000000000")
+          // console.log("div", divisor);
+          // console.log("hoge");
           collateralizedNFTsCleaned.push(
             {
             countIndex: ethers.BigNumber.from(collateralizedNFTFromContract.countIndex).toNumber(),
@@ -122,7 +127,7 @@ export default function Home() {
             timestamp: new Date(collateralizedNFTFromContract.timestamp * 1000),
             name: asset.name,
             image_thumbnail_url: asset.image_thumbnail_url,
-            price: ethers.BigNumber.from(collateralizedNFTFromContract.biggestBidPrice).toNumber(),
+            price: ethers.BigNumber.from(collateralizedNFTFromContract.biggestBidPrice.div(divisor)).toNumber(),
           }
           );
         }
@@ -237,8 +242,8 @@ export default function Home() {
               const startingMinutes = collateralizedNFT.timestamp.getMinutes();
               const startingSeconds = collateralizedNFT.timestamp.getSeconds();
               return (
-                <>
-                  <div key={index} className='bg-gray-100 w-[70%] flex flex-row'>
+                <div key={index} className='bg-gray-100 w-[70%] flex flex-col'>
+                  <div  className='bg-gray-100 w-[100%] flex flex-row'>
                     <img className='w-[20%]'
                       src={ collateralizedNFT.image_thumbnail_url }
                       alt="new"
@@ -247,29 +252,15 @@ export default function Home() {
                       {/* <div className='OpenSeaのリンク'>NFTアドレス：</div> */}
                       <a className='text-blue-600' href={openseaTestNetLink} target="_blank" rel="noopener noreferrer">{ collateralizedNFT.name }</a>
                     </div>
-                    <div className='w-[10%] bg-green-300 flex flex-col justify-center items-center'> { collateralizedNFT.price }</div>
+                    <div className='w-[10%] bg-green-300 flex flex-col justify-center items-center'> { collateralizedNFT.price}</div>
                     {/* <div className='w-[10%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
                     <Countdown startingDate={startingDate} startingHours={startingHours} startingMinutes={startingMinutes} startingSeconds={startingSeconds} ></Countdown>
                     {/* <div className="flex"> */}
                     <PriceArea countIndex={collateralizedNFT.countIndex} ></PriceArea>
-                    {/* <div key={index} className="text-black flex flex-col items-center justify-center w-[10%]">
-                      <textarea
-                        key={index}
-                        value={inputedText}
-                        onChange={(e) => setInputedText(e.target.value)}
-                        cols={4}
-                        rows={1}
-                      />
-                    </div> */}
-                  {/* </div> */}
-                    {/* <div className='w-[10%] bg-gray-100 flex flex-col justify-center items-center'>
-                      <button className='bg-orange-400 border-solid border-1 p-2 rounded-md hover:bg-gray-400 m-4 text-white shadow-md' onClick={() => { makeBid(collateralizedNFT.countIndex, inputedText) }}>
-                          Bid!
-                      </button>
-                    </div> */}
+                    
                   </div>
-                  <div className='h-2'></div>
-                </>
+                  <div className='h-4 bg-white'></div>
+                </div>
               );
             })}
         </div>

@@ -11,7 +11,7 @@ import nftMint from "/src/nft-mint.json";
 
 export default function Collateralize() {
   //デプロイされたコントラクトのアドレス
-  const CONTRACT_ADDRESS_NFT_FI = "0xBF1FEb187300F4B7A7b8Bbd95880356440Bf46B9";
+  const CONTRACT_ADDRESS_NFT_FI = "0x26B9CFbAAd4d1B98b29eA003393eE79F01854D91";
   const CONTRACT_ADDRESS_NFT_MINT = "0x842BDfd7da2d603b176f0E41B58a6f2D785aFBcA";
   //ABI
   // const contractABI = "hoge"
@@ -163,6 +163,7 @@ export default function Collateralize() {
         // nftMintContract.transferFrom(currentAccount,nftMintContract.address,tokenId);
 
         console.log("コントラクトにロックしたぞい！")
+        alert("コントラクトにロックしたぞい！");
 
         console.log(
           `Mined, see transaction: https://rinkeby.etherscan.io/tx/${collateralizeTxn.hash}`
@@ -251,7 +252,7 @@ export default function Collateralize() {
             </div>
           )}
         </header>
-        <div className='h-[200%] bg-white flex flex-col justify-center items-center'>
+        <div className='h-[150%] bg-white flex flex-col justify-center items-center'>
           <div className='bg-gray-400 m-4 p-2 boreder-2 border-solid rounded-md' onClick={getOwningNFTs}>☛　持っているAdamのNFTを表示する　</div>
           {/* <div className='bg-yellow-300 w-[70%] flex flex-row'>
             <div className='flex flex-col w-[40%]'>
@@ -273,25 +274,27 @@ export default function Collateralize() {
             .map((owningNFT, index) => {
               const openseaTestNetLink = "https://testnets.opensea.io/assets/rinkeby/" + owningNFT.asset_contract.address + "/" + owningNFT.token_id;
               return (
-                <>
-                <div key={index} className='bg-gray-100 w-[70%] flex flex-row'>
-                  <img className='w-[20%]'
-                    src={owningNFT.image_thumbnail_url}
-                    alt="new"
-                    />
-                  <div className='flex flex-row w-[60%] items-center justify-center'>
-                    {/* <div className='OpenSeaのリンク'>NFTアドレス：</div> */}
-                    <a className='text-blue-600' href={openseaTestNetLink} target="_blank" rel="noopener noreferrer">{ owningNFT.name }</a>
+                <div key = {index} className='bg-gray-100 w-[70%] flex flex-col'>
+                  <div  className='bg-gray-100  w-[100%] flex flex-row'>
+                    <img className='w-[20%]'
+                      src={owningNFT.image_thumbnail_url}
+                      alt="new"
+                      />
+                    <div className='flex flex-row w-[60%] items-center justify-center'>
+                      {/* <div className='OpenSeaのリンク'>NFTアドレス：</div> */}
+                      <a className='text-blue-600' href={openseaTestNetLink} target="_blank" rel="noopener noreferrer">{ owningNFT.name }</a>
+                    </div>
+                    {/* <div className='w-[20%] bg-green-300 flex flex-col justify-center items-center'>現在の価格を表示</div>
+                    <div className='w-[20%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
+                    <div className='w-[20%] bg-gray-100 flex flex-col justify-center items-center'>
+                      <button  className='bg-orange-400 border-solid border-1 p-2 rounded-md hover:bg-gray-400 m-4 text-white shadow-md' onClick={()=>{collateralizeNFT(owningNFT.asset_contract.address, owningNFT.token_id)} } >
+                      Collateralize!</button>
+                    </div>
                   </div>
-                  {/* <div className='w-[20%] bg-green-300 flex flex-col justify-center items-center'>現在の価格を表示</div>
-                  <div className='w-[20%] bg-blue-300 flex flex-col justify-center items-center'>残り時間を表示</div> */}
-                  <div className='w-[20%] bg-gray-100 flex flex-col justify-center items-center'>
-                    <button className='bg-orange-400 border-solid border-1 p-2 rounded-md hover:bg-gray-400 m-4 text-white shadow-md' onClick={()=>{collateralizeNFT(owningNFT.asset_contract.address, owningNFT.token_id)} } >
-                    Collateralize!</button>
-                  </div>
+                  <div className='h-4 bg-white'></div>
                 </div>
-                  <div className='h-2'></div>
-                  </>
+                  
+                  
               );
             })}
         </div>
