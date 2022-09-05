@@ -227,7 +227,7 @@ export default function Collateralize() {
   return (
     <>
       <Head>
-        <title>GMO NFT-Fi</title>
+        <title>NFT-Fi</title>
       </Head>
       <div className='bg-gray-800 h-screen w-screen'>
         <header className='bg-black h-[10%] flex flex-row justify-center items-center'>
@@ -237,7 +237,7 @@ export default function Collateralize() {
           <div className='flex flex-row items-end space-x-2 '>
             <div className='text-white text-4xl'>Eve</div>
             <div className='text-blue-700 text-sm'>by</div>
-            <div className=" text-blue-700 font-bold align-bottom">GMO</div>
+            <div className=" text-blue-700 font-bold align-bottom"></div>
           </div>
           {currentAccount === "" ? (
             <button
